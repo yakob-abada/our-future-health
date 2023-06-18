@@ -5,11 +5,10 @@ import { checkDigitType } from "./CheckDigitType";
 class IdGenerator {
     constructor (
         private readonly prefix: string,
-        private readonly checkDigit: checkDigitType,
-        private readonly redlock: Redlock
+        private readonly checkDigit: checkDigitType
     ) {}
 
-    public async generate (value: number, length: number) : Promise<string> {
+    public generate (value: number, length: number) : string {
         const createdIdString = this.padStart(value, length)
         return this.prefix + createdIdString + this.checkDigit.create(createdIdString);
     }

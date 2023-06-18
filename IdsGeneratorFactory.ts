@@ -1,18 +1,19 @@
 import IdGenerator from "./IdGenerator";
 import IdsGenerator from "./IdsGenerator";
 import checkdigit from 'checkdigit';
-import * as redis from 'redis';
+// import * as redis from 'redis';
 import Redlock from "redlock";
+import redis, { Redis } from "ioredis";
 
 class IdGeneratorFactory {
     public static async create (): Promise<IdsGenerator> {
         const prefix = process.env.ID_PREFIX ?? '';
         const idLength = process.env.ID_LENGTH ?? '';
         const redisHost = process.env.REDIS_HOST ?? '';
-        const redisClient = redis.createClient({
-            url: `redis://${redisHost}:6379`
-        });
-        await redisClient.connect();
+        const redisClient = new Redis({
+            port: 6379, // Redis port
+            host: redisHost, // Redis host
+          });
 
         // Here we pass our client to redlock.
         const redlock = new Redlock(
@@ -42,7 +43,7 @@ class IdGeneratorFactory {
             }
         );
 
-        return new IdsGenerator(new IdGenerator(prefix, checkdigit.mod11, redlock), parseInt(idLength), redisClient)
+        return new IdsGenerator(new IdGenerator(prefix, checkdigit.mod11), parseInt(idLength), redisClient, redlock)
     }
 }
 
