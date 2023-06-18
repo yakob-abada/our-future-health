@@ -1,9 +1,9 @@
 import IdGenerator from "../IdGenerator";
-import IdsGenerator from "../IdsGenerator";
+import BatchIdCreator from "../BatchIdCreator";
 import { Request } from 'express';
 import Redlock, { Lock } from "redlock";
 
-describe('Generate Ids', () => {
+describe('Batch Id creator', () => {
     test('Generate zero result', async () => {
         const stubIdGenerator = {} as IdGenerator;
         const request = {
@@ -20,8 +20,8 @@ describe('Generate Ids', () => {
             acquire: jest.fn().mockResolvedValue(stubLock)
         } as Redlock
 
-        const sut = new IdsGenerator(stubIdGenerator, 15, stubClient, stubRedLock)
-        const result = await sut.generate(request)
+        const sut = new BatchIdCreator(stubIdGenerator, 15, stubClient, stubRedLock)
+        const result = await sut.create(request)
         expect(result).toStrictEqual([]);
     });
 
@@ -46,8 +46,8 @@ describe('Generate Ids', () => {
             acquire: jest.fn().mockResolvedValue(stubLock)
         } as Redlock
 
-        const sut = new IdsGenerator(stubIdGenerator, 15, stubClient, stubRedLock)
-        const result = await sut.generate(request)
+        const sut = new BatchIdCreator(stubIdGenerator, 15, stubClient, stubRedLock)
+        const result = await sut.create(request)
         expect(result).toStrictEqual([
             'ACME1577836800000996',
             'ACME1577836800000997'

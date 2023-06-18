@@ -1,10 +1,9 @@
 import { Request } from 'express';
-import { Redis, RedisValue } from 'ioredis';
-import { RedisClient } from 'ioredis/built/connectors/SentinelConnector/types';
+import { Redis } from 'ioredis';
 import Redlock from 'redlock';
 import IdGenerator from "./IdGenerator";
 
-class IdsGenerator {
+class BatchIdCreator {
     constructor (
         private readonly idGenerator: IdGenerator,
         private readonly idNumberLength: number,
@@ -12,7 +11,7 @@ class IdsGenerator {
         private readonly redlock: Redlock
     ) {}
 
-    async generate (req: Request): Promise<string[]> {
+    async create (req: Request): Promise<string[]> {
         // @todo: ids type needs to checked.
         const idsCount = parseInt(req.query.ids as string);
         const ids: string[] = []
@@ -45,4 +44,4 @@ class IdsGenerator {
     }
 }
 
-export default IdsGenerator;
+export default BatchIdCreator;
