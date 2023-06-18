@@ -8,8 +8,9 @@ class IdGeneratorFactory {
     public static async create (): Promise<IdsGenerator> {
         const prefix = process.env.ID_PREFIX ?? '';
         const idLength = process.env.ID_LENGTH ?? '';
+        const redisHost = process.env.REDIS_HOST ?? '';
         const redisClient = redis.createClient({
-            url: 'redis://127.0.0.1:6379'
+            url: `redis://${redisHost}:6379`
         });
         await redisClient.connect();
 
@@ -41,7 +42,7 @@ class IdGeneratorFactory {
             }
         );
 
-        return new IdsGenerator(new IdGenerator(prefix, checkdigit.mod11, redisClient), parseInt(idLength), redlock)
+        return new IdsGenerator(new IdGenerator(prefix, checkdigit.mod11, redlock), parseInt(idLength), redisClient)
     }
 }
 

@@ -42,12 +42,13 @@ const redis = __importStar(require("redis"));
 const redlock_1 = __importDefault(require("redlock"));
 class IdGeneratorFactory {
     static create() {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const prefix = (_a = process.env.ID_PREFIX) !== null && _a !== void 0 ? _a : '';
             const idLength = (_b = process.env.ID_LENGTH) !== null && _b !== void 0 ? _b : '';
+            const redisHost = (_c = process.env.REDIS_HOST) !== null && _c !== void 0 ? _c : '';
             const redisClient = redis.createClient({
-                url: 'redis://127.0.0.1:6379'
+                url: `redis://${redisHost}:6379`
             });
             yield redisClient.connect();
             // Here we pass our client to redlock.
@@ -71,7 +72,7 @@ class IdGeneratorFactory {
                 // attempted with the `using` API.
                 automaticExtensionThreshold: 500, // time in ms
             });
-            return new IdsGenerator_1.default(new IdGenerator_1.default(prefix, checkdigit_1.default.mod11, redisClient), parseInt(idLength), redlock);
+            return new IdsGenerator_1.default(new IdGenerator_1.default(prefix, checkdigit_1.default.mod11, redlock), parseInt(idLength), redisClient);
         });
     }
 }

@@ -10,9 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class IdsGenerator {
-    constructor(idGenerator, idNumberLength) {
+    constructor(idGenerator, idNumberLength, client) {
         this.idGenerator = idGenerator;
         this.idNumberLength = idNumberLength;
+        this.client = client;
     }
     generate(req) {
         var _a;
@@ -20,10 +21,16 @@ class IdsGenerator {
             // @todo: ids type needs to checked.
             const idsCount = parseInt((_a = req.query.ids) !== null && _a !== void 0 ? _a : '');
             const ids = [];
-            for (let i = 0; i < idsCount; i++) {
-                const id = yield this.idGenerator.generate(this.idNumberLength);
-                ids.push(id);
+            let value = yield this.client.get('id');
+            if (null === value) {
+                value = 1;
             }
+            for (let i = 0; i < idsCount; i++) {
+                const id = yield this.idGenerator.generate(value, this.idNumberLength);
+                ids.push(id);
+                value++;
+            }
+            yield this.client.set('id', value);
             return ids;
         });
     }

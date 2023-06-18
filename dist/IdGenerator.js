@@ -10,32 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class IdGenerator {
-    constructor(prefix, checkDigit, client, redlock) {
+    constructor(prefix, checkDigit, redlock) {
         this.prefix = prefix;
         this.checkDigit = checkDigit;
-        this.client = client;
         this.redlock = redlock;
     }
-    generate(length) {
+    generate(value, length) {
         return __awaiter(this, void 0, void 0, function* () {
-            let createdId = 0;
-            try {
-                // Acquire a lock.
-                let lock = yield this.redlock.acquire(["a"], 5000);
-                let value = yield this.client.get('id');
-                if (null === value) {
-                    value = 0;
-                }
-                value++;
-                yield this.client.set('id', value);
-                createdId = value;
-                console.log(value);
-                yield lock.release();
-            }
-            catch (e) {
-                console.error("Error when trying to set:", createdId);
-            }
-            const createdIdString = this.padStart(createdId, length);
+            const createdIdString = this.padStart(value, length);
             return this.prefix + createdIdString + this.checkDigit.create(createdIdString);
         });
     }
