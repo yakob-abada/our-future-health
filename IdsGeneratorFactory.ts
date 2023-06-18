@@ -1,9 +1,8 @@
 import IdGenerator from "./IdGenerator";
 import IdsGenerator from "./IdsGenerator";
 import checkdigit from 'checkdigit';
-// import * as redis from 'redis';
 import Redlock from "redlock";
-import redis, { Redis } from "ioredis";
+import { Redis } from "ioredis";
 
 class IdGeneratorFactory {
     public static async create (): Promise<IdsGenerator> {

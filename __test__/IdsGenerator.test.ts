@@ -25,7 +25,7 @@ describe('Generate Ids', () => {
         expect(result).toStrictEqual([]);
     });
 
-    test('Generate two resulst', async () => {
+    test('Generate two results', async () => {
         const stubIdGenerator = {
             generate: jest.fn().mockReturnValueOnce('ACME1577836800000996').mockReturnValueOnce('ACME1577836800000997')
         } as IdGenerator;
