@@ -1,5 +1,3 @@
-import { RedisClientType } from "redis";
-import Redlock from "redlock";
 import { checkDigitType } from "./CheckDigitType";
 
 class IdGenerator {
